@@ -3,10 +3,10 @@ import {
   queryCampuses,
   postCampus,
   putCampus
-} from "../../../models/campus"
+} from "../../models/campus"
 
 
-export default async (req, res) => {
+const todoCampuses = async (req, res) => {
   const httpMethod = req.method
   const { id, name } = req.body
   const campuses = await getCampuses()
@@ -49,3 +49,5 @@ export default async (req, res) => {
       break
   }
 }
+
+export default todoCampuses

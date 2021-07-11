@@ -5,42 +5,55 @@ import {
 } from "../../../models/campus"
 
 
-export default async (req, res) => {
+const todoCampus = async (req, res) => {
   const httpMethod = req.method
   const { id } = req.query
   const { name } = req.body
   const campuses = await getCampuses()
-  const result = campuses.filter(campus => campus.id === parseInt(id))
+  const filtered = campuses.filter(campus => campus.id === parseInt(id))
 
   switch(httpMethod) {
     case 'GET':
       // get by id the campus (TODO)
-      if (result.length > 0) {
-        res.status(200).json(result[0])
+      if (filtered.length > 0) {
+        // res.setHeader('Cache-Control', 's-maxage=60, stale-while-revalidate');
+        res.status(200).json(filtered[0])
       } else {
-        res.status(404).json({ code: 404, message: `Campus with id: ${id} not found` })
+        res.status(404).end(`Campus with id: ${id} not found`)
       }
       break
     case 'PATCH':
       // Update the job (TODO) with Patch
-      if (result.length > 0) {
+      if (filtered.length > 0) {
         if (name.length > 0 && name.length < 51) {
           await patchCampus(id, name)
           res.status(200).json({ id, name: name })
         } else {
-          res.status(422).json({ code: 422, message: `Campus name be a string between 1 and 50 characters long but ${name.length} it's too long` })
+          res.status(422).end({
+            status: 422,
+            message: `Campus name be a string between 1 and 50 characters long`
+          })
         }
       } else {
-        res.status(404).json({ code: 404, message: `Campus with id: ${id} not found` })
+        res.status(404).json({
+          status: 404,
+          message: `Campus with id: ${id} not found`
+        })
       }
       break
     case 'DELETE':
       // Delete once campus (TODO)
-      if (result.length > 0) {
+      if (filtered.length > 0) {
         await delCampus(id)
-        res.status(204).json({ message: `Success delete campus ${id}` })
+        res.status(204).json({
+          status: 204,
+          message: `Success delete campus ${id}`
+        })
       } else {
-        res.status(404).json({ code: 404, message: `Campus with id: ${id} not found` })
+        res.status(404).json({
+          status: 404,
+          message: `Campus with id: ${id} not found`
+        })
       }
       break
     default:
@@ -49,3 +62,5 @@ export default async (req, res) => {
       break
   }
 }
+
+export default todoCampus
