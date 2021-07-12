@@ -16,7 +16,7 @@ export default async function (req, res) {
   let params = {}
   const results = req.url.split('?').pop().split('&')
   results.map(result => {
-    params = { ...params, [result.split('=').shift()]: result.split('=').pop() }
+    return params = { ...params, [result.split('=').shift()]: result.split('=').pop() }
   })
   const { limit, offset } = params
   const total = Math.ceil(campuses.length / (offset - limit))
@@ -32,8 +32,6 @@ export default async function (req, res) {
           campuses: query
         })
       } else {
-        res.setHeader('Content-Type', 'aplication/json')
-        // res.status(500).end('fail')
         res.status(200).json(campuses)
       }
       break

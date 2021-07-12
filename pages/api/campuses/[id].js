@@ -18,8 +18,6 @@ export default async function (req, res) {
     case 'GET':
       // get by id the campus (TODO)
       if (filtered.length > 0) {
-        // res.setHeader('Content-Type', 'aplication/json')
-        // res.setHeader('Cache-Control', 's-maxage=60, stale-while-revalidate')
         res.status(200).json(filtered[0])
       } else {
         res.status(404).end(`Campus with id: ${id} not found`)
