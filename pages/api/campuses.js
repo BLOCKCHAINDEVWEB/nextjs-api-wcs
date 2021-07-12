@@ -4,9 +4,11 @@ import {
   postCampus,
   putCampus
 } from "../../models/campus"
+import {cors } from './cors'
 
 
-const todoCampuses = async (req, res) => {
+export default async (req, res) => {
+  await cors(req, res)
   const httpMethod = req.method
   const { id, name } = req.body
   const campuses = await getCampuses()
@@ -49,5 +51,3 @@ const todoCampuses = async (req, res) => {
       break
   }
 }
-
-export default todoCampuses

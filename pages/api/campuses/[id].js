@@ -3,9 +3,11 @@ import {
   patchCampus,
   delCampus
 } from "../../../models/campus"
+import {cors } from '../cors'
 
 
-const todoCampus = async (req, res) => {
+export default async (req, res) => {
+  await cors(req, res)
   const httpMethod = req.method
   const { id } = req.query
   const { name } = req.body
@@ -16,7 +18,8 @@ const todoCampus = async (req, res) => {
     case 'GET':
       // get by id the campus (TODO)
       if (filtered.length > 0) {
-        // res.setHeader('Cache-Control', 's-maxage=60, stale-while-revalidate');
+        res.setHeader('Content-Type', 'aplication/json')
+        res.setHeader('Cache-Control', 's-maxage=60, stale-while-revalidate')
         res.status(200).json(filtered[0])
       } else {
         res.status(404).end(`Campus with id: ${id} not found`)
@@ -27,6 +30,7 @@ const todoCampus = async (req, res) => {
       if (filtered.length > 0) {
         if (name.length > 0 && name.length < 51) {
           await patchCampus(id, name)
+          res.setHeader('Content-Type', 'aplication/json')
           res.status(200).json({ id, name: name })
         } else {
           res.status(422).end({
@@ -62,5 +66,3 @@ const todoCampus = async (req, res) => {
       break
   }
 }
-
-export default todoCampus
