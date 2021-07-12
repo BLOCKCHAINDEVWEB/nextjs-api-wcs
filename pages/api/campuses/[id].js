@@ -6,7 +6,7 @@ import {
 import {cors } from '../cors'
 
 
-export default async (req, res) => {
+export default async function (req, res) {
   await cors(req, res)
   const httpMethod = req.method
   const { id } = req.query
@@ -18,8 +18,8 @@ export default async (req, res) => {
     case 'GET':
       // get by id the campus (TODO)
       if (filtered.length > 0) {
-        res.setHeader('Content-Type', 'aplication/json')
-        res.setHeader('Cache-Control', 's-maxage=60, stale-while-revalidate')
+        // res.setHeader('Content-Type', 'aplication/json')
+        // res.setHeader('Cache-Control', 's-maxage=60, stale-while-revalidate')
         res.status(200).json(filtered[0])
       } else {
         res.status(404).end(`Campus with id: ${id} not found`)
@@ -28,9 +28,12 @@ export default async (req, res) => {
     case 'PATCH':
       // Update the job (TODO) with Patch
       if (filtered.length > 0) {
+        if (!req.body) {
+          res.status(404).end('Error empty body')
+          return
+        }
         if (name.length > 0 && name.length < 51) {
           await patchCampus(id, name)
-          res.setHeader('Content-Type', 'aplication/json')
           res.status(200).json({ id, name: name })
         } else {
           res.status(422).end({

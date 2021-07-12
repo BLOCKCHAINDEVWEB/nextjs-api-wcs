@@ -3,11 +3,11 @@ import {
   queryCampuses,
   postCampus,
   putCampus
-} from "../../models/campus"
-import {cors } from './cors'
+} from "../../../models/campus"
+import {cors } from '../cors'
 
 
-export default async (req, res) => {
+export default async function (req, res) {
   await cors(req, res)
   const httpMethod = req.method
   const { id, name } = req.body
@@ -32,15 +32,25 @@ export default async (req, res) => {
           campuses: query
         })
       } else {
+        res.setHeader('Content-Type', 'aplication/json')
+        // res.status(500).end('fail')
         res.status(200).json(campuses)
       }
       break
     case 'POST':
+      if (!req.body) {
+        res.status(404).end('Error ampty body')
+        return
+      }
       // Post a new campus (TODO)
       const { lastID } = await postCampus(name)
       res.status(200).json({ id: lastID, name })
       break
     case 'PUT':
+      if (!req.body) {
+        res.status(404).end('Error ampty body')
+        return
+      }
       // Update once campus (TODO)
       await putCampus(id, name)
       res.status(200).json({ id: id, name: name })
